@@ -2,6 +2,11 @@
 .idea/
 test-results/
 # Byte-compiled files
+# Specifically handle src and tests for clarity
+src/**/__pycache__/
+tests/**/__pycache__/
+src/models/__pycache__/
+src/pages/__pycache__/
 __pycache__/
 *.py[cod]
 *.pyo
