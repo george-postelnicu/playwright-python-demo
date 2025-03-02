@@ -9,7 +9,7 @@ from src.pages.top_nav_component import TopNavComponent
 class LucaNetHomePage:
     def __init__(self, page: Page) -> None:
         self.page = page
-        self.main_header = page.locator(".hero-advanced__headline--default")
+        self.main_header = page.locator(".hero-advanced__headline--default").or_(page.locator("//h1"))
         self.cookies_modal = CookiesModal(page)
         self.search_modal = SearchModal(page)
         self.top_nav_component = TopNavComponent(page)

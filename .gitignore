@@ -1,3 +1,8 @@
 .venv/
 .idea/
 test-results/
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd

@@ -1,3 +1,4 @@
+import gettext
 from typing import Optional
 
 import pytest
@@ -11,6 +12,10 @@ from src.pages.main_nav_component import MainNavComponent
 from src.pages.search_modal import SearchModal
 from src.pages.search_page import SearchPage
 from src.pages.top_nav_component import Language
+
+# Set the local directory
+domain = 'lokalise'
+localedir = './locales'
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -32,11 +37,22 @@ def test_has_title(get_home_page) -> None:
     expect(get_home_page.main_header).to_have_text("Empowering modern finance leaders to lead with ease")
 
 
-def test_can_change_language(get_home_page) -> None:
-    get_home_page.top_nav_component.select_language(Language.FR)
-    expect(get_home_page.page).to_have_title("La plateforme CFO pour les leaders financiers modernes :: Lucanet")
-    expect(get_home_page.main_header).to_have_text(
-        "Donner aux responsables financiers d'aujourd'hui les moyens de piloter avec facilité")
+@pytest.mark.language
+@pytest.mark.parametrize("language", [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "nl"
+])
+def test_can_change_language(get_home_page, language) -> None:
+    i18n = gettext.translation(domain, localedir, fallback=False, languages=[language])
+    i18n.install()
+    if language != "en":
+        get_home_page.top_nav_component.select_language(Language[language.upper()])
+    expect(get_home_page.page).to_have_title(_("home_page.title"))
+    expect(get_home_page.main_header).to_have_text(_("home_page.header"))
 
 
 def test_can_close_search_modal(get_home_page) -> None:
