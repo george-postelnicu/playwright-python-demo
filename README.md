@@ -4,7 +4,6 @@ It's a simple demo project to show-case features of `pytest-playwright` on [Luca
 ## what does this project show-case?
 * positive and negative test cases;
 * page object pattern;
-* using a data driven approach;
 * separating concerns and passing data down to the correct level of responsibility;
 * using faker to generate data;
 * using python data class;
@@ -12,10 +11,12 @@ It's a simple demo project to show-case features of `pytest-playwright` on [Luca
 * using pytest/playwright fixtures;
 * using pytest parametrize;
 * using pytest mark;
+* hashing the contents of files to assert it;
 * using different types of playwright locators and chaining them to other locators or filters;
-* handling python i18n with gettext module.
+* handling python i18n with gettext module;
 * handling multiple pages with playwright;
-* interacting in the Lucanet pages with custom selects, modals, form and form validation, nav menu and a language switcher.
+* handling downloads with playwright;
+* interacting in the Lucanet pages with custom selects, iframes, modals, form and form validation, nav menu and a language switcher.
 
 ## requirements
 
@@ -74,9 +75,10 @@ Running all the tests is as easy as calling the `pytest` library without any par
    clear;pytest
    ````
 
-Running only 1 test, the only one currently marked:
+Running tests with markers:
    ```shell
    clear;pytest -m language
+   clear;pytest -m pdf
    ```
 
 If you would like to see the browser or change it, please modify manually the file found in root directory `pytest.ini`
