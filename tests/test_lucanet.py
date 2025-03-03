@@ -6,12 +6,14 @@ from faker import Faker
 from playwright.sync_api import Page, expect, Locator
 
 from src.models.contact_us_form import ContactUsForm
+from src.pages.brochure_page import BrochurePage
 from src.pages.contact_us_page import ContactUsPage, FieldsetEnum
 from src.pages.lucanet_home_page import LucaNetHomePage
 from src.pages.main_nav_component import MainNavComponent
 from src.pages.search_modal import SearchModal
 from src.pages.search_page import SearchPage
 from src.pages.top_nav_component import Language
+from src.utils.utils import sha256sum
 
 # Set the local directory
 domain = 'lokalise'
@@ -98,6 +100,17 @@ def test_contact_us_form_with_missing_phone(get_home_page) -> None:
             expect(label).to_be_hidden()
         else:
             expect(label).to_have_text("Please complete this required field.")
+
+
+@pytest.mark.pdf
+def test_download_brochure_file(page: Page) -> None:
+    brochure_page: BrochurePage = BrochurePage(page)
+    brochure_page.load('/learn/download/infographic-find-the-right-consolidation-software/')
+    expect(brochure_page.header).to_have_text('How Do I find the right financial consolidation software?')
+    file_path: str = brochure_page.download()
+    assert sha256sum(file_path) == (
+        '6d35cedf7d1cbcf75a3b94f204fa5af987355b9da54bd821d85f096d55ce1b54'
+    )
 
 
 def get_contact_form() -> ContactUsForm:
