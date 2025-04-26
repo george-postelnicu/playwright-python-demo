@@ -19,8 +19,8 @@ msgstr ""
 
 #: tests/test_lucanet.py:54
 msgid "home_page.title"
-msgstr "La plateforme CFO pour les leaders financiers modernes :: Lucanet"
+msgstr "La CFO Solution Platform. Cloud-first. IA-augmentée. :: Lucanet"
 
 #: tests/test_lucanet.py:55
 msgid "home_page.header"
-msgstr "Donner aux responsables financiers d'aujourd'hui les moyens de piloter avec facilité"
+msgstr "La CFO Solution Platform pour les responsables financiers de demain"
