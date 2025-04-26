@@ -19,8 +19,8 @@ msgstr ""
 
 #: tests/test_lucanet.py:54
 msgid "home_page.title"
-msgstr "Het CFO Solution Platform voor moderne financiële leiders :: Lucanet"
+msgstr "Het CFO Solution Platform. Cloud-first. AI-verhoogd. :: Lucanet"
 
 #: tests/test_lucanet.py:55
 msgid "home_page.header"
-msgstr "Moderne financiële leiders de kracht geven om makkelijk te leiden"
+msgstr "Het CFO Solution Platform voor finance leiders die klaar zijn voor de toekomst"

@@ -11,3 +11,4 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+locales/*/LC_MESSAGES/lokalise.mo
