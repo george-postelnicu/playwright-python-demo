@@ -105,7 +105,7 @@ def test_contact_us_form_with_missing_phone(get_home_page) -> None:
 @pytest.mark.pdf
 def test_download_brochure_file(page: Page) -> None:
     brochure_page: BrochurePage = BrochurePage(page)
-    brochure_page.load('/learn/download/infographic-find-the-right-consolidation-software/')
+    brochure_page.load('/en/resource-hub/infographics/find-the-right-consolidation-software/')
     expect(brochure_page.header).to_have_text('How Do I find the right financial consolidation software?')
     file_path: str = brochure_page.download()
     assert sha256sum(file_path) == (
