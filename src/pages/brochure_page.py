@@ -4,7 +4,7 @@ class BrochurePage:
     def __init__(self, page: Page):
         self.page = page
         self.header: Locator = page.get_by_role('heading', level=1)
-        self.__download_infographic: Locator = page.locator("//iframe[@title='Embedded CTA']").content_frame.get_by_text("Download infographic")
+        self.__download_infographic: Locator = page.locator("//iframe[@title='Embedded CTA']").first.content_frame.get_by_text("Download infographic")
 
     def load(self, resource: str) -> None:
         self.page.goto(resource)
