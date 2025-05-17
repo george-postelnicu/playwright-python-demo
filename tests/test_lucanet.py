@@ -10,7 +10,6 @@ from src.pages.brochure_page import BrochurePage
 from src.pages.contact_us_page import ContactUsPage, FieldsetEnum
 from src.pages.lucanet_home_page import LucaNetHomePage
 from src.pages.main_nav_component import MainNavComponent
-from src.pages.search_modal import SearchModal
 from src.pages.search_page import SearchPage
 from src.pages.top_nav_component import Language
 from src.utils.utils import sha256sum
@@ -33,10 +32,10 @@ def get_home_page(page: Page) -> LucaNetHomePage:
     home_page: LucaNetHomePage = LucaNetHomePage(page)
     return home_page
 
-
+@pytest.mark.title
 def test_has_title(get_home_page) -> None:
-    expect(get_home_page.page).to_have_title("CFO Solution Platform for modern finance leaders :: Lucanet")
-    expect(get_home_page.main_header).to_have_text("Empowering modern finance leaders to lead with ease")
+    expect(get_home_page.page).to_have_title("The CFO Solution Platform. Cloud-first. AI-elevated :: Lucanet")
+    expect(get_home_page.main_header).to_have_text("The CFO Solution Platform for future-ready finance leaders")
 
 
 @pytest.mark.language
@@ -57,34 +56,39 @@ def test_can_change_language(get_home_page, language) -> None:
     expect(get_home_page.main_header).to_have_text(_("home_page.header"))
 
 
+@pytest.mark.search
 def test_can_close_search_modal(get_home_page) -> None:
-    search_modal: SearchModal = get_home_page.top_nav_component.search_for()
-    expect(search_modal.modal).to_be_visible()
-    search_modal.close()
-    expect(search_modal.modal).to_be_hidden()
+    navigation = get_home_page.main_nav_component
+    navigation.open_search()
+    expect(navigation.search_field).to_be_visible()
+    navigation.close_search()
+    expect(navigation.search_field).to_be_hidden()
 
-
+@pytest.mark.search
 def test_wrong_search_returns_no_results(get_home_page) -> None:
-    search_modal: SearchModal = get_home_page.top_nav_component.search_for()
-    search_page: SearchPage = search_modal.search("abcd")
-    expect(search_page.search_input).to_have_value("abcd")
-    expect(search_page.results).to_have_text("No results found")
+    navigation = get_home_page.main_nav_component
+    search_page: SearchPage = navigation.search("abcd")
+    expect(search_page.result_hits).to_have_text("Showing 0 search results")
+    expect(search_page.no_result_big_message).to_have_text("Sorry, no results matched your search terms.")
+    expect(search_page.result_links).to_have_count(0)
 
-
+@pytest.mark.search
 def test_ifrs_search_returns_results(get_home_page) -> None:
-    search_modal: SearchModal = get_home_page.top_nav_component.search_for()
-    search_page: SearchPage = search_modal.search("IFRS")
-    expect(search_page.result_hits).to_have_text("51 results")
-    expect(search_page.result_links).to_have_count(10)
+    navigation = get_home_page.main_nav_component
+    search_page: SearchPage = navigation.search("IFRS")
+    expect(search_page.result_hits).to_have_text("Showing 93 search results")
+    expect(search_page.no_result_big_message).to_be_hidden()
+    expect(search_page.result_links).to_have_count(93)
 
 
+@pytest.mark.contact_us
 def test_multi_window_contact_page(get_home_page) -> None:
     main_nav: MainNavComponent = get_home_page.main_nav_component
     new_page: Page = main_nav.navigate("About Us", "Contact Us", True)
     contact_page: ContactUsPage = ContactUsPage(new_page)
     expect(contact_page.header).to_have_text("Contact us")
 
-
+@pytest.mark.contact_us
 def test_contact_us_form_with_missing_phone(get_home_page) -> None:
     main_nav: MainNavComponent = get_home_page.main_nav_component
     new_page: Page = main_nav.navigate("About Us", "Contact Us", True)

@@ -2,8 +2,6 @@ from enum import Enum
 
 from playwright.sync_api import Page, expect
 
-from src.pages.search_modal import SearchModal
-
 
 class Language(Enum):
     EN = "English"
@@ -27,7 +25,3 @@ class TopNavComponent:
         expect(self.language).to_have_class('languagenavigation --open')
         link = self.language_dropdown.get_by_role('link', name=language.value)
         link.click()
-
-    def search_for(self) -> SearchModal:
-        self.search.click()
-        return SearchModal(self.page)
