@@ -3,6 +3,11 @@ on:
   pull_request:
     branches: [ main, feature/*, fix/* ]
 
+permissions:
+  checks: write
+  pull-requests: write
+  contents: read
+
 jobs:
   test:
     timeout-minutes: 30
