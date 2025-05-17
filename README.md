@@ -84,10 +84,12 @@ Running tests with markers:
 If you would like to see the browser or change it, please modify manually the file found in root directory `pytest.ini`
    ```text
    [pytest]
-   addopts = --tracing on
-             --screenshot on
+   addopts = --tracing retain-on-failure
+             --screenshot only-on-failure
+             --video retain-on-failure
              --browser chromium
              --base-url https://www.lucanet.com/en/
+             --junit-xml test-results/junit.xml
    ;          --headed
    ;          --slowmo 500
    ```

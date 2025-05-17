@@ -31,9 +31,10 @@ jobs:
       run: |
         pipenv install --dev
 
-    - name: Install Playwright Browsers
+    - name: Install Playwright Chromium
       run: |
-        pipenv run playwright install --with-deps
+        pipenv run playwright install chromium
+        pipenv run playwright install-deps chromium
 
     - name: Install gettext
       run: sudo apt-get install -y gettext
@@ -52,7 +53,7 @@ jobs:
         pipenv run pytest tests/
 
     - name: Upload test results
-      if: always()
+      if: ${{ !cancelled() }}
       uses: actions/upload-artifact@v4
       with:
         name: playwright-test-results
@@ -60,3 +61,9 @@ jobs:
           test-results/
           playwright-report/
         retention-days: 5
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: ${{ !cancelled() }}
+      with:
+        files: "test-results/junit.xml"
