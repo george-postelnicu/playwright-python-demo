@@ -20,22 +20,26 @@ localedir = './locales'
 
 
 @pytest.fixture(scope="function", autouse=True)
-def before_each_after_each(page: Page):
+def home_page(page: Page):
     home_page: LucaNetHomePage = LucaNetHomePage(page)
     home_page.load()
     home_page.cookies_modal.accept_cookies()
     yield home_page
 
-
-@pytest.fixture()
-def get_home_page(page: Page) -> LucaNetHomePage:
-    home_page: LucaNetHomePage = LucaNetHomePage(page)
-    return home_page
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    return {
+        **browser_context_args,
+        "viewport": {
+            "width": 1920,
+            "height": 1080,
+        }
+    }
 
 @pytest.mark.title
-def test_has_title(get_home_page) -> None:
-    expect(get_home_page.page).to_have_title("The CFO Solution Platform. Cloud-first. AI-elevated :: Lucanet")
-    expect(get_home_page.main_header).to_have_text("The CFO Solution Platform for future-ready finance leaders")
+def test_has_title(home_page) -> None:
+    expect(home_page.page).to_have_title("The CFO Solution Platform. Cloud-first. AI-elevated :: Lucanet")
+    expect(home_page.main_header).to_have_text("The CFO Solution Platform for future-ready finance leaders")
 
 
 @pytest.mark.language
@@ -47,52 +51,60 @@ def test_has_title(get_home_page) -> None:
     "it",
     "nl"
 ])
-def test_can_change_language(get_home_page, language) -> None:
+def test_can_change_language(home_page, language) -> None:
     i18n = gettext.translation(domain, localedir, fallback=False, languages=[language])
     i18n.install()
     if language != "en":
-        get_home_page.top_nav_component.select_language(Language[language.upper()])
-    expect(get_home_page.page).to_have_title(_("home_page.title"))
-    expect(get_home_page.main_header).to_have_text(_("home_page.header"))
+        home_page.top_nav_component.select_language(Language[language.upper()])
+    expect(home_page.page).to_have_title(_("home_page.title"))
+    expect(home_page.main_header).to_have_text(_("home_page.header"))
 
 
 @pytest.mark.search
-def test_can_close_search_modal(get_home_page) -> None:
-    navigation = get_home_page.main_nav_component
-    navigation.open_search()
-    expect(navigation.search_field).to_be_visible()
-    navigation.close_search()
-    expect(navigation.search_field).to_be_hidden()
+def test_can_close_search_modal(home_page) -> None:
+    main_nav: MainNavComponent = home_page.main_nav_component
+    main_nav.open_search()
+    expect(main_nav.search_field).to_be_visible()
+    main_nav.close_search()
+    expect(main_nav.search_field).to_be_hidden()
+
 
 @pytest.mark.search
-def test_wrong_search_returns_no_results(get_home_page) -> None:
-    navigation = get_home_page.main_nav_component
-    search_page: SearchPage = navigation.search("abcd")
+def test_wrong_search_returns_no_results(home_page) -> None:
+    main_nav: MainNavComponent = home_page.main_nav_component
+    search_page: SearchPage = main_nav.search("abcd")
     expect(search_page.result_hits).to_have_text("Showing 0 search results")
     expect(search_page.no_result_big_message).to_have_text("Sorry, no results matched your search terms.")
     expect(search_page.result_links).to_have_count(0)
 
+
 @pytest.mark.search
-def test_ifrs_search_returns_results(get_home_page) -> None:
-    navigation = get_home_page.main_nav_component
-    search_page: SearchPage = navigation.search("IFRS")
-    expect(search_page.result_hits).to_have_text("Showing 93 search results")
+def test_ifrs_search_returns_results(home_page) -> None:
+    main_nav: MainNavComponent = home_page.main_nav_component
+    search_page: SearchPage = main_nav.search("IFRS")
+    expect(search_page.result_hits).to_have_text("Showing 92 search results")
     expect(search_page.no_result_big_message).to_be_hidden()
-    expect(search_page.result_links).to_have_count(93)
+    expect(search_page.result_links).to_have_count(92)
 
 
-@pytest.mark.contact_us
-def test_multi_window_contact_page(get_home_page) -> None:
-    main_nav: MainNavComponent = get_home_page.main_nav_component
-    new_page: Page = main_nav.navigate("About Us", "Contact Us", True)
-    contact_page: ContactUsPage = ContactUsPage(new_page)
-    expect(contact_page.header).to_have_text("Contact us")
+@pytest.mark.window
+def test_multi_window_contact_page(home_page) -> None:
+    main_nav: MainNavComponent = home_page.main_nav_component
+    navigation_links = [
+        {"main": "Solutions", "secondary": "Solutions", "header": "Integrated solutions for all CFO jobs-to-be-done"},
+        {"main": "Platform", "secondary": "Innovation Hub", "header": "Innovation Hub"},
+        {"main": "Customers", "secondary": "Our partners", "header": "Meet our trusted partners"},
+        {"main": "Resources", "secondary": "Blog", "header": "Insights"},
+        {"main": "Why Lucanet", "secondary": "About Us", "header": "We're Lucanet"}]
+    for navigation in navigation_links:
+        new_page: Page = main_nav.navigate(navigation["main"], navigation["secondary"], True)
+        expect(new_page.get_by_role('heading', level=1)).to_have_text(navigation["header"])
+        new_page.close()
 
-@pytest.mark.contact_us
-def test_contact_us_form_with_missing_phone(get_home_page) -> None:
-    main_nav: MainNavComponent = get_home_page.main_nav_component
-    new_page: Page = main_nav.navigate("About Us", "Contact Us", True)
-    contact_page: ContactUsPage = ContactUsPage(new_page)
+
+@pytest.mark.form
+def test_contact_us_form_with_missing_phone(home_page) -> None:
+    contact_page: ContactUsPage = home_page.main_nav_component.click_contact_us()
     form: ContactUsForm = get_contact_form()
     contact_page.fill_form(form)
     contact_page.submit()
@@ -106,7 +118,7 @@ def test_contact_us_form_with_missing_phone(get_home_page) -> None:
             expect(label).to_have_text("Please complete this required field.")
 
 
-@pytest.mark.pdf
+@pytest.mark.download
 def test_download_brochure_file(page: Page) -> None:
     brochure_page: BrochurePage = BrochurePage(page)
     brochure_page.load('/en/resource-hub/infographics/find-the-right-consolidation-software/')

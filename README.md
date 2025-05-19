@@ -77,8 +77,12 @@ Running all the tests is as easy as calling the `pytest` library without any par
 
 Running tests with markers:
    ```shell
+   clear;pytest -m title
    clear;pytest -m language
-   clear;pytest -m pdf
+   clear;pytest -m search
+   clear;pytest -m window
+   clear;pytest -m form
+   clear;pytest -m download
    ```
 
 If you would like to see the browser or change it, please modify manually the file found in root directory `pytest.ini`
@@ -94,4 +98,10 @@ If you would like to see the browser or change it, please modify manually the fi
    ;          --slowmo 500
    ```
 
-For more information on how to debug the tests please read [Run-in-debug-mode](https://playwright.dev/python/docs/debug#run-in-debug-mode)
+## debugging the tests
+To open a trace for a failed test
+```shell
+playwright show-trace test-results/name-of-failed-test/trace.zip
+```
+
+For more information on how to debug the tests, please read [Run-in-debug-mode](https://playwright.dev/python/docs/debug#run-in-debug-mode)
