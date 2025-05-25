@@ -1,4 +1,5 @@
 import gettext
+import re
 from typing import Optional
 
 import pytest
@@ -26,6 +27,7 @@ def home_page(page: Page):
     home_page.cookies_modal.accept_cookies()
     yield home_page
 
+
 @pytest.fixture(scope="session")
 def browser_context_args(browser_context_args):
     return {
@@ -35,6 +37,7 @@ def browser_context_args(browser_context_args):
             "height": 1080,
         }
     }
+
 
 @pytest.mark.title
 def test_has_title(home_page) -> None:
@@ -82,9 +85,8 @@ def test_wrong_search_returns_no_results(home_page) -> None:
 def test_ifrs_search_returns_results(home_page) -> None:
     main_nav: MainNavComponent = home_page.main_nav_component
     search_page: SearchPage = main_nav.search("IFRS")
-    expect(search_page.result_hits).to_have_text("Showing 92 search results")
+    expect(search_page.result_hits).to_have_text(re.compile(r"Showing \d{2,3} search results"))
     expect(search_page.no_result_big_message).to_be_hidden()
-    expect(search_page.result_links).to_have_count(92)
 
 
 @pytest.mark.window

@@ -1,7 +1,9 @@
 name: PR Playwright Tests
 on:
-  pull_request:
-    branches: [ feature/*, fix/* ]
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
 
 permissions:
   checks: write
