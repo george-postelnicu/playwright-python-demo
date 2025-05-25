@@ -1,0 +1,10 @@
+name: PR Playwright Tests
+on:
+  pull_request:
+    branches:
+      - 'fix/*'
+      - 'feature/*'
+
+jobs:
+  playwright_tests:
+    uses: ./.github/workflows/playwright_template.yml
