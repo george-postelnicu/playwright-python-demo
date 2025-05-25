@@ -1,4 +1,8 @@
 # playwright-python-demo
+
+[![Tests](https://github.com/george-postelnicu/playwright-python-demo/actions/workflows/playwright_scheduled.yml/badge.svg)](https://github.com/george-postelnicu/playwright-python-demo/actions/workflows/playwright_scheduled.yml)
+[![Last Test Status](https://github.com/george-postelnicu/playwright-python-demo/actions/workflows/playwright_scheduled.yml/badge.svg?branch=main&event=schedule)](https://github.com/george-postelnicu/playwright-python-demo/actions/workflows/playwright_scheduled.yml)
+
 It's a simple demo project to show-case features of `pytest-playwright` on [Lucanet](https://www.lucanet.com/en/) website
 
 ## what does this project show-case?

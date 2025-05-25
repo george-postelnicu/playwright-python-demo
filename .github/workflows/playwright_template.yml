@@ -1,7 +1,6 @@
-name: Playwright Tests
+name: Playwright Test Template
 on:
-  pull_request:
-    branches: [ main, feature/*, fix/* ]
+  workflow_call:
 
 permissions:
   checks: write
